@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Weather</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: url("https://t4.ftcdn.net/jpg/06/41/91/85/360_F_641918542_bL3O5qWqKmaVrxM12Qa1pp1owFvKKP3k.jpg");   
+            background-size: cover; 
+            background-position: center;
+        }
+        .container {
+            background-color: white;
+            background : rgba(255, 255, 255, .1);
+            padding: 20px;
+            height: 400px;
+            backdrop-filter: blur(30px);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+        .weather-info {
+            padding: 50px;
+            
+            display: none;
+        }
+        .weather-info p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body  >
+    <div class="container">
+        <h1>Live Weather</h1>
+        <div class="search-bar">
+            <input type="text" id="cityInput" placeholder="Enter city name">
+            <button onclick="getWeather()">Get Weather</button>
+        </div>
+        <div class="weather-info" id="weatherInfo">
+            <h2>Weather in <span id="cityName"></span></h2>
+            <p>Temperature: <span id="temperature"></span> °C</p>
+            <p>Humidity: <span id="humidity"></span> %</p>
+            <p>Weather: <span id="weather"></span></p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '306dccc4ce874853b5292323242807';
+
+        function getWeather() {
+            const city = document.getElementById('cityInput').value;
+            if (!city) {
+                alert('Please enter a city name');
+                return;
+            }
+
+            fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.location) {
+                        document.getElementById('cityName').innerText = data.location.name;
+                        document.getElementById('temperature').innerText = data.current.temp_c;
+                        document.getElementById('humidity').innerText = data.current.humidity;
+                        document.getElementById('weather').innerText = data.current.condition.text;
+                        document.getElementById('weatherInfo').style.display = 'block';
+                    } else {
+                        alert('City not found');
+                    }
+                })
+                .catch(error => {
+                    alert('Error fetching weather data');
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+</html>
